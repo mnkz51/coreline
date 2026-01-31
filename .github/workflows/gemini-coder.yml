@@ -30,18 +30,39 @@ jobs:
             4. コードは index.html と script.js の2ファイルに分けて出力してください。
             5. ロジックと描画を分離し、将来的な機能拡張（自動化・物流）に耐えうるクリーンなコードを書いてください。
             
+            【厳守事項】
+            1. 成果物の content は、必ず Base64 形式に変換してください。
+            2. 自然言語の解説や、マークダウンの装飾（ ```json 等）は一切含めず、純粋なJSONのみを返してください。
+            
+            {
+              "files": [
+                {"path": "index.html", "content": "(Base64 encoded string)"},
+                {"path": "script.js", "content": "(Base64 encoded string)"}
+              ]
+            }
+            
             【現在のタスク】
             SPEC.md の「現在の目標」を確認し、それを実現するための index.html および script.js の全内容を、それぞれマークダウンのコードブロック形式で出力してください。
-          files: |
-            SPEC.md
-            index.html
-            script.js
+
+      - name: Process JSON with jq and base64
+        run: |
+          LOG_FILE=$(ls -t gemini-artifacts/stdout.log | head -n 1)
+          
+          jq -c '.files[]' "$LOG_FILE" | while read -r file; do
+            FILE_PATH=$(echo "$file" | jq -r '.path')
+            CONTENT_B64=$(echo "$file" | jq -r '.content')
+            
+            mkdir -p "$(dirname "$FILE_PATH")"
+            echo "$CONTENT_B64" | base64 --decode > "$FILE_PATH"
+            
+            echo "Successfully restored: $FILE_PATH"
+          done
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         with:
           commit-message: "Update code based on latest SPEC.md"
           title: "Gemini: SPEC.mdの内容を反映しました"
-          body: "スマホからの指示に基づき、AIがコードを生成しました。動作確認をお願いします。"
+          body: "コードを生成しました。動作確認をお願いします。"
           branch: gemini-updates
           delete-branch: true
