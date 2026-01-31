@@ -22,16 +22,18 @@ jobs:
           gemini_model: 'gemini-2.5-flash'
           prompt: |
             あなたは「Core-Line」というブラウザゲームのリード開発者です。
+            SPEC.md（および存在すれば blueprints/ 内の資料）に基づき、ゲームを更新してください。
+            
+            【出力先】
+            以下のパスでコードを生成してください。
+            - docs/index.html
+            - docs/script.js
             
             【設計方針】
             1. 外部ライブラリ（グリッド用）は不使用。Red Blob Gamesの「Cube Coordinates」に基づいた自作のHex管理クラスを実装する。
             2. 描画は PixiJS を使用。
             3. ビルドツール（npm/webpack等）は使わず、ブラウザでそのまま動く「JavaScript (ES modules)」で記述してください。
-            4. コードは index.html と script.js の2ファイルに分けて出力してください。
-            5. ロジックと描画を分離し、将来的な機能拡張（自動化・物流）に耐えうるクリーンなコードを書いてください。
-            
-            【現在のタスク】
-            SPEC.md の「現在の目標」を確認し、それを実現するための index.html および script.js の全内容を、それぞれマークダウンのコードブロック形式で出力してください。
+            4. ロジックと描画を分離し、将来的な機能拡張（自動化・物流）に耐えうるクリーンなコードを書いてください。
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
@@ -41,3 +43,7 @@ jobs:
           body: "コードを生成しました。動作確認をお願いします。"
           branch: gemini-updates
           delete-branch: true
+          add-paths: |
+            docs/
+            SPEC.md
+            blueprints/
