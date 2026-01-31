@@ -32,23 +32,26 @@ jobs:
             
             【厳守事項】
             1. 成果物の content は、必ず Base64 形式に変換してください。
-            2. 自然言語の解説や、マークダウンの装飾（ ```json 等）は一切含めず、純粋なJSONのみを返してください。
+            2. 自然言語の解説は一切含めず、純粋なJSONのみを返してください。
+            3. 回答の最後には、必ず以下の形式でファイルをまとめてください。
             
+            ```json
             {
               "files": [
                 {"path": "index.html", "content": "(Base64 encoded string)"},
                 {"path": "script.js", "content": "(Base64 encoded string)"}
               ]
             }
+            ```
             
             【現在のタスク】
             SPEC.md の「現在の目標」を確認し、それを実現するための index.html および script.js の全内容を、それぞれマークダウンのコードブロック形式で出力してください。
 
       - name: Process JSON with jq and base64
         run: |
-          LOG_FILE=$(ls -t gemini-artifacts/stdout.log | head -n 1)
+          sed -n '/```json/,/```/p' gemini-artifacts/stdout.log | sed '1d;$d' > extracted.json
           
-          jq -c '.files[]' "$LOG_FILE" | while read -r file; do
+          jq -c '.files[]' extracted.json | while read -r file; do
             FILE_PATH=$(echo "$file" | jq -r '.path')
             CONTENT_B64=$(echo "$file" | jq -r '.content')
             
