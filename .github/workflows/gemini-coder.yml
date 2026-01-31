@@ -17,8 +17,9 @@ jobs:
 
       - name: Gemini AI Coding
         uses: google-github-actions/run-gemini-cli@v0
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         with:
-          api-key: ${{ secrets.GEMINI_API_KEY }}
           prompt: |
             あなたは「Core-Line」というブラウザゲームのリード開発者です。
             
