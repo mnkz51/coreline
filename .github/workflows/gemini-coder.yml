@@ -2,7 +2,7 @@ name: Gemini Auto Coder
 on:
   push:
     paths:
-      - 'SPEC.md'
+      - SPEC.md
 
 jobs:
   code-gen:
@@ -19,7 +19,8 @@ jobs:
         uses: google-github-actions/run-gemini-cli@v0
         with:
           gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
-          gemini_model: 'gemini-2.5-flash'
+          gemini_model: gemini-2.5-flash
+          upload_artifacts: true
           prompt: |
             あなたは「Core-Line」というブラウザゲームのリード開発者です。
             SPEC.md（および存在すれば blueprints/ 内の資料）に基づき、ゲームを更新してください。
