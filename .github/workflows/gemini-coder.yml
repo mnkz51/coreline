@@ -47,4 +47,3 @@ jobs:
           add-paths: |
             docs/
             SPEC.md
-            blueprints/
